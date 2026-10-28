@@ -22,475 +22,678 @@
     
     <title>Nano Banana - AI Image Generation & Editing by Google Gemini</title>
     
-    <!-- Favicon SVG 内联图标 -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E🍌%3C/text%3E%3C/svg%3E">
+    <!-- Favicon SVG 内联图标 - 简约抽象香蕉形状 -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23FDE047' d='M8 4c-2 0-3 1-3 3 0 4 2 12 10 20 1 1 2 1 3 0 8-8 10-16 10-20 0-2-1-3-3-3-2 0-4 2-6 4h-2c-2-2-4-4-6-4z'/%3E%3C/svg%3E">
     
     <style>
-        /* 全局样式和CSS变量 */
+        /* ========================================
+           设计系统：CSS 变量定义
+           8px间距系统，克制的配色方案
+           ======================================== */
         :root {
-            --banana-yellow: #FFE135;
-            --dark-bg: #1a1a1a;
-            --darker-bg: #0d0d0d;
-            --light-text: #ffffff;
-            --gray-text: #b0b0b0;
-            --accent-yellow: #FFD700;
-            --gradient-start: #FFE135;
-            --gradient-end: #FFA500;
+            /* 颜色系统 - 克制优雅的配色 */
+            --color-bg: #0a0a0a;
+            --color-bg-elevated: #141414;
+            --color-bg-card: #1a1a1a;
+            --color-border: rgba(255, 255, 255, 0.08);
+            --color-border-hover: rgba(255, 255, 255, 0.12);
+            
+            --color-text-primary: #f5f5f5;
+            --color-text-secondary: #a0a0a0;
+            --color-text-tertiary: #6b6b6b;
+            
+            /* 香蕉黄作为唯一强调色 - 谨慎使用 */
+            --color-accent: #FDE047;
+            --color-accent-glow: rgba(253, 224, 71, 0.15);
+            --color-accent-subtle: rgba(253, 224, 71, 0.05);
+            
+            /* 8px间距系统 */
+            --space-1: 8px;
+            --space-2: 16px;
+            --space-3: 24px;
+            --space-4: 32px;
+            --space-5: 40px;
+            --space-6: 48px;
+            --space-8: 64px;
+            --space-10: 80px;
+            --space-12: 96px;
+            --space-16: 128px;
+            --space-20: 160px;
+            
+            /* 排版系统 */
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", "Roboto", "Helvetica Neue", sans-serif;
+            --font-mono: ui-monospace, "SF Mono", "Monaco", "Cascadia Code", "Consolas", monospace;
+            
+            /* 动画曲线 */
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
         }
         
+        /* ========================================
+           全局重置和基础样式
+           ======================================== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
         
+        html {
+            scroll-behavior: smooth;
+        }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background-color: var(--dark-bg);
-            color: var(--light-text);
+            font-family: var(--font-sans);
+            background-color: var(--color-bg);
+            color: var(--color-text-primary);
             line-height: 1.6;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         
-        /* 容器和布局 */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        /* 导航栏样式 */
+        /* ========================================
+           粘性半透明模糊导航栏
+           ======================================== */
         nav {
-            background-color: var(--darker-bg);
-            padding: 1rem 0;
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 2px 10px rgba(255, 225, 53, 0.1);
+            background: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--color-border);
         }
         
-        nav .container {
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: var(--space-2) var(--space-3);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         
         .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--banana-yellow);
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--color-text-primary);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: var(--space-1);
+        }
+        
+        .logo-icon {
+            width: 24px;
+            height: 24px;
         }
         
         .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: var(--space-4);
             list-style: none;
         }
         
         .nav-links a {
-            color: var(--light-text);
+            font-size: 14px;
+            color: var(--color-text-secondary);
             text-decoration: none;
-            transition: color 0.3s;
+            transition: color 0.2s var(--ease-out);
+            letter-spacing: -0.01em;
         }
         
         .nav-links a:hover {
-            color: var(--banana-yellow);
+            color: var(--color-text-primary);
         }
         
-        /* 英雄区块样式 */
+        /* ========================================
+           容器和布局
+           ======================================== */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 var(--space-3);
+        }
+        
+        /* ========================================
+           精致的英雄区块
+           微妙的动画渐变背景
+           ======================================== */
         .hero {
-            padding: 5rem 0;
-            text-align: center;
-            background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
             position: relative;
+            padding: var(--space-20) 0 var(--space-16);
             overflow: hidden;
         }
         
-        .hero::before {
-            content: '';
+        .hero-background {
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 225, 53, 0.1) 0%, transparent 70%);
-            animation: pulse 4s ease-in-out infinite;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: radial-gradient(ellipse 80% 50% at 50% -20%, var(--color-accent-glow), transparent);
+            opacity: 0.5;
+            animation: heroGlow 8s ease-in-out infinite;
         }
         
-        @keyframes pulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
+        @keyframes heroGlow {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.05); }
         }
         
         .hero-content {
             position: relative;
             z-index: 1;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
         }
         
         .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            font-size: clamp(48px, 8vw, 72px);
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            line-height: 1.1;
+            margin-bottom: var(--space-3);
+            background: linear-gradient(135deg, var(--color-text-primary) 0%, var(--color-text-secondary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
         
         .hero p {
-            font-size: 1.3rem;
-            color: var(--gray-text);
-            margin-bottom: 2rem;
-            max-width: 700px;
+            font-size: 18px;
+            line-height: 1.7;
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-6);
+            max-width: 600px;
             margin-left: auto;
             margin-right: auto;
+            letter-spacing: -0.01em;
         }
         
-        /* 按钮样式 */
-        .cta-button {
-            display: inline-block;
-            padding: 1rem 2.5rem;
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-            color: var(--darker-bg);
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 4px 15px rgba(255, 225, 53, 0.3);
-        }
-        
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 25px rgba(255, 225, 53, 0.5);
-        }
-        
-        .secondary-button {
-            display: inline-block;
-            padding: 1rem 2.5rem;
-            background: transparent;
-            color: var(--banana-yellow);
-            text-decoration: none;
-            border: 2px solid var(--banana-yellow);
-            border-radius: 50px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            transition: all 0.3s;
-            margin-left: 1rem;
-        }
-        
-        .secondary-button:hover {
-            background: var(--banana-yellow);
-            color: var(--darker-bg);
-        }
-        
-        /* 特性区块样式 */
-        .features {
-            padding: 5rem 0;
-            background-color: var(--dark-bg);
-        }
-        
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            color: var(--banana-yellow);
-        }
-        
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-        }
-        
-        .feature-card {
-            background-color: var(--darker-bg);
-            padding: 2rem;
-            border-radius: 15px;
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: 1px solid rgba(255, 225, 53, 0.1);
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(255, 225, 53, 0.2);
-        }
-        
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        
-        .feature-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--banana-yellow);
-        }
-        
-        .feature-card p {
-            color: var(--gray-text);
-        }
-        
-        /* 使用案例区块样式 */
-        .use-cases {
-            padding: 5rem 0;
-            background-color: var(--darker-bg);
-        }
-        
-        .use-cases-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-        
-        .use-case {
-            background-color: var(--dark-bg);
-            padding: 2rem;
-            border-radius: 15px;
-            border-left: 4px solid var(--banana-yellow);
-        }
-        
-        .use-case h3 {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-            color: var(--light-text);
-        }
-        
-        .use-case p {
-            color: var(--gray-text);
-        }
-        
-        /* 工作流程区块样式 */
-        .how-it-works {
-            padding: 5rem 0;
-            background-color: var(--dark-bg);
-        }
-        
-        .steps-container {
+        .hero-buttons {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 2rem;
-            margin-top: 3rem;
+            gap: var(--space-2);
+            justify-content: center;
             flex-wrap: wrap;
         }
         
-        .step {
-            flex: 1;
-            min-width: 250px;
+        /* ========================================
+           按钮系统
+           ======================================== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s var(--ease-out);
+            cursor: pointer;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: var(--color-accent);
+            color: var(--color-bg);
+            box-shadow: 0 0 0 0 var(--color-accent-glow);
+        }
+        
+        .btn-primary:hover {
+            box-shadow: 0 0 32px 8px var(--color-accent-glow);
+            transform: translateY(-1px);
+        }
+        
+        .btn-ghost {
+            background: transparent;
+            color: var(--color-text-primary);
+            border: 1px solid var(--color-border);
+        }
+        
+        .btn-ghost:hover {
+            border-color: var(--color-border-hover);
+            background: var(--color-bg-card);
+        }
+        
+        /* ========================================
+           Bento-grid 特性区块
+           精致的卡片设计
+           ======================================== */
+        .section {
+            padding: var(--space-16) 0;
+        }
+        
+        .section-header {
             text-align: center;
+            margin-bottom: var(--space-8);
+        }
+        
+        .section-title {
+            font-size: clamp(32px, 5vw, 48px);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: var(--space-2);
+            line-height: 1.2;
+        }
+        
+        .section-subtitle {
+            font-size: 18px;
+            color: var(--color-text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            letter-spacing: -0.01em;
+        }
+        
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-2);
+        }
+        
+        .bento-card {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: var(--space-4);
+            transition: all 0.3s var(--ease-out);
             position: relative;
+            overflow: hidden;
+        }
+        
+        .bento-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--color-accent-glow), transparent);
+            opacity: 0;
+            transition: opacity 0.3s var(--ease-out);
+        }
+        
+        .bento-card:hover {
+            border-color: var(--color-border-hover);
+            transform: translateY(-2px);
+        }
+        
+        .bento-card:hover::before {
+            opacity: 1;
+        }
+        
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            margin-bottom: var(--space-3);
+            opacity: 0.9;
+        }
+        
+        .bento-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: var(--space-2);
+            letter-spacing: -0.02em;
+        }
+        
+        .bento-card p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--color-text-secondary);
+            letter-spacing: -0.01em;
+        }
+        
+        /* ========================================
+           CSS-only 可视化演示区块
+           渐变和SVG构建的效果展示
+           ======================================== */
+        .demo-section {
+            padding: var(--space-12) 0;
+            background: var(--color-bg-elevated);
+        }
+        
+        .demo-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: var(--space-4);
+            align-items: center;
+        }
+        
+        .demo-box {
+            aspect-ratio: 1;
+            border-radius: 12px;
+            border: 1px solid var(--color-border);
+            padding: var(--space-3);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .demo-prompt {
+            background: var(--color-bg-card);
+        }
+        
+        .demo-prompt::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: linear-gradient(135deg, 
+                rgba(253, 224, 71, 0.1) 0%, 
+                rgba(124, 58, 237, 0.1) 50%,
+                rgba(59, 130, 246, 0.1) 100%
+            );
+            border-radius: 8px;
+            margin: var(--space-2);
+        }
+        
+        .demo-result {
+            background: var(--color-bg-card);
+            animation: resultFade 2s ease-in-out infinite;
+        }
+        
+        .demo-result::after {
+            content: '';
+            position: absolute;
+            inset: var(--space-2);
+            background: 
+                radial-gradient(circle at 30% 40%, rgba(253, 224, 71, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(124, 58, 237, 0.2) 0%, transparent 50%),
+                linear-gradient(135deg, 
+                    rgba(59, 130, 246, 0.1) 0%, 
+                    rgba(253, 224, 71, 0.15) 50%,
+                    rgba(168, 85, 247, 0.1) 100%
+                );
+            border-radius: 8px;
+        }
+        
+        @keyframes resultFade {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+        
+        .demo-label {
+            position: relative;
+            z-index: 1;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--color-text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .demo-arrow {
+            width: 40px;
+            height: 40px;
+            color: var(--color-accent);
+            opacity: 0.6;
+        }
+        
+        /* ========================================
+           工作流程 - 3步区块
+           ======================================== */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-6);
+        }
+        
+        .step-card {
+            text-align: center;
         }
         
         .step-number {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-            color: var(--darker-bg);
-            border-radius: 50%;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin: 0 auto 1.5rem;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: var(--space-3);
+            color: var(--color-accent);
         }
         
-        .step h3 {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-            color: var(--light-text);
+        .step-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: var(--space-2);
+            letter-spacing: -0.02em;
         }
         
-        .step p {
-            color: var(--gray-text);
+        .step-card p {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
         }
         
-        /* FAQ区块样式 */
-        .faq {
-            padding: 5rem 0;
-            background-color: var(--darker-bg);
-        }
-        
-        .faq-container {
+        /* ========================================
+           优雅的 FAQ - details/summary
+           ======================================== */
+        .faq-list {
             max-width: 800px;
             margin: 0 auto;
-            margin-top: 3rem;
         }
         
-        .faq-item {
-            background-color: var(--dark-bg);
-            margin-bottom: 1rem;
-            border-radius: 10px;
+        details {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            margin-bottom: var(--space-2);
             overflow: hidden;
-            border: 1px solid rgba(255, 225, 53, 0.1);
         }
         
-        .faq-question {
-            padding: 1.5rem;
+        details[open] {
+            border-color: var(--color-border-hover);
+        }
+        
+        summary {
+            padding: var(--space-3) var(--space-4);
             cursor: pointer;
+            user-select: none;
+            font-weight: 500;
+            font-size: 16px;
+            letter-spacing: -0.01em;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: background-color 0.3s;
+            transition: background 0.2s var(--ease-out);
         }
         
-        .faq-question:hover {
-            background-color: rgba(255, 225, 53, 0.05);
+        summary:hover {
+            background: var(--color-accent-subtle);
         }
         
-        .faq-question h3 {
-            font-size: 1.1rem;
-            color: var(--light-text);
+        summary::after {
+            content: '+';
+            font-size: 20px;
+            color: var(--color-text-secondary);
+            transition: transform 0.2s var(--ease-out);
         }
         
-        .faq-icon {
-            color: var(--banana-yellow);
-            font-size: 1.5rem;
-            transition: transform 0.3s;
-        }
-        
-        .faq-item.active .faq-icon {
+        details[open] summary::after {
             transform: rotate(45deg);
         }
         
         .faq-answer {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s, padding 0.3s;
-            padding: 0 1.5rem;
+            padding: 0 var(--space-4) var(--space-3);
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--color-text-secondary);
         }
         
-        .faq-item.active .faq-answer {
-            max-height: 500px;
-            padding: 0 1.5rem 1.5rem;
-        }
-        
-        .faq-answer p {
-            color: var(--gray-text);
-        }
-        
-        /* CTA区块样式 */
-        .cta-section {
-            padding: 5rem 0;
-            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
-            text-align: center;
-        }
-        
-        .cta-section h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-            color: var(--banana-yellow);
-        }
-        
-        .cta-section p {
-            font-size: 1.2rem;
-            color: var(--gray-text);
-            margin-bottom: 2rem;
-        }
-        
-        /* 页脚样式 */
+        /* ========================================
+           页脚
+           ======================================== */
         footer {
-            background-color: var(--darker-bg);
-            padding: 3rem 0 1.5rem;
-            border-top: 1px solid rgba(255, 225, 53, 0.1);
+            border-top: 1px solid var(--color-border);
+            padding: var(--space-8) 0 var(--space-4);
+            margin-top: var(--space-20);
         }
         
-        .footer-content {
+        .footer-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
+            grid-template-columns: 2fr repeat(3, 1fr);
+            gap: var(--space-6);
+            margin-bottom: var(--space-6);
         }
         
-        .footer-section h4 {
-            color: var(--banana-yellow);
-            margin-bottom: 1rem;
+        .footer-brand p {
+            font-size: 14px;
+            color: var(--color-text-tertiary);
+            line-height: 1.6;
+            margin-top: var(--space-2);
         }
         
-        .footer-section ul {
+        .footer-links h4 {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-text-tertiary);
+            margin-bottom: var(--space-2);
+        }
+        
+        .footer-links ul {
             list-style: none;
         }
         
-        .footer-section ul li {
-            margin-bottom: 0.5rem;
-        }
-        
-        .footer-section a {
-            color: var(--gray-text);
+        .footer-links a {
+            font-size: 14px;
+            color: var(--color-text-secondary);
             text-decoration: none;
-            transition: color 0.3s;
+            display: block;
+            margin-bottom: var(--space-1);
+            transition: color 0.2s var(--ease-out);
         }
         
-        .footer-section a:hover {
-            color: var(--banana-yellow);
+        .footer-links a:hover {
+            color: var(--color-text-primary);
         }
         
         .footer-bottom {
             text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 225, 53, 0.1);
-            color: var(--gray-text);
+            padding-top: var(--space-4);
+            border-top: 1px solid var(--color-border);
+            font-size: 12px;
+            color: var(--color-text-tertiary);
         }
         
-        /* 移动端响应式样式 */
+        /* ========================================
+           滚动显示动画
+           使用 IntersectionObserver
+           ======================================== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 尊重用户的减少动画偏好 */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            
+            .fade-in {
+                opacity: 1;
+                transform: none;
+            }
+        }
+        
+        /* ========================================
+           响应式设计
+           ======================================== */
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .hero p {
-                font-size: 1.1rem;
-            }
-            
             .nav-links {
                 display: none;
             }
             
-            .secondary-button {
-                display: block;
-                margin: 1rem auto 0;
+            .hero {
+                padding: var(--space-12) 0 var(--space-10);
             }
             
-            .section-title {
-                font-size: 2rem;
+            .hero h1 {
+                font-size: 40px;
             }
             
-            .steps-container {
-                flex-direction: column;
+            .demo-container {
+                grid-template-columns: 1fr;
+                gap: var(--space-3);
             }
             
-            .step {
-                min-width: 100%;
+            .demo-arrow {
+                transform: rotate(90deg);
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: var(--space-4);
+            }
+            
+            .section {
+                padding: var(--space-10) 0;
             }
         }
         
         @media (max-width: 480px) {
-            .hero h1 {
-                font-size: 2rem;
+            .nav-container {
+                padding: var(--space-2);
             }
             
-            .cta-button, .secondary-button {
-                padding: 0.8rem 1.5rem;
-                font-size: 1rem;
+            .container {
+                padding: 0 var(--space-2);
+            }
+            
+            .bento-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <!-- 导航栏 -->
+    <!-- 粘性半透明模糊导航栏 -->
     <nav>
-        <div class="container">
+        <div class="nav-container">
             <div class="logo">
-                <span>🍌</span>
+                <!-- 简约抽象香蕉SVG图标 -->
+                <svg class="logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 4c-2 0-3 1-3 3 0 4 2 12 10 20 1 1 2 1 3 0 8-8 10-16 10-20 0-2-1-3-3-3-2 0-4 2-6 4h-2c-2-2-4-4-6-4z" fill="currentColor" style="color: #FDE047;"/>
+                </svg>
                 <span>Nano Banana</span>
             </div>
             <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
-                <li><a href="#use-cases">Use Cases</a></li>
                 <li><a href="#how-it-works">How It Works</a></li>
                 <li><a href="#faq">FAQ</a></li>
             </ul>
@@ -499,234 +702,265 @@
 
     <!-- 英雄区块 -->
     <section class="hero">
+        <div class="hero-background"></div>
         <div class="container">
             <div class="hero-content">
-                <h1>🍌 Nano Banana</h1>
-                <p>Google's Gemini-Powered Image Generation & Editing Model. Create stunning visuals with AI-driven text-to-image generation, advanced editing capabilities, and consistent character design.</p>
-                <div>
-                    <a href="https://ai.google.dev/gemini-api" class="cta-button" target="_blank" rel="noopener">Get Started</a>
-                    <a href="#how-it-works" class="secondary-button">Learn More</a>
+                <h1 class="fade-in">AI Image Generation, Reimagined</h1>
+                <p class="fade-in">Nano Banana harnesses Google's Gemini to transform ideas into visual reality. Create, edit, and maintain character consistency with unprecedented speed and quality.</p>
+                <div class="hero-buttons fade-in">
+                    <a href="https://ai.google.dev/gemini-api" class="btn btn-primary" target="_blank" rel="noopener">Get Started</a>
+                    <a href="#how-it-works" class="btn btn-ghost">Learn More</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 核心特性区块 -->
-    <section id="features" class="features">
+    <!-- Bento-grid 特性区块 -->
+    <section id="features" class="section">
         <div class="container">
-            <h2 class="section-title">Key Features</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🎨</div>
-                    <h3>Text-to-Image Generation</h3>
-                    <p>Transform your words into stunning visual art. Describe your vision, and Nano Banana brings it to life with remarkable detail and creativity.</p>
+            <div class="section-header fade-in">
+                <h2 class="section-title">Built for Creators</h2>
+                <p class="section-subtitle">Powerful AI capabilities designed to accelerate your creative workflow</p>
+            </div>
+            
+            <div class="bento-grid">
+                <div class="bento-card fade-in">
+                    <!-- Text-to-Image SVG 图标 -->
+                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+                        <path d="M3 15l5-5 4 4 6-6 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="8" cy="9" r="1.5" fill="currentColor" opacity="0.6"/>
+                    </svg>
+                    <h3>Text-to-Image</h3>
+                    <p>Transform natural language descriptions into stunning visuals. Simply describe what you imagine, and watch it materialize.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">✨</div>
-                    <h3>Advanced Image Editing</h3>
-                    <p>Refine and perfect your images with AI-powered editing tools. Modify, enhance, and transform existing images with natural language commands.</p>
+                
+                <div class="bento-card fade-in">
+                    <!-- Image Editing SVG 图标 -->
+                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 3v18M3 12h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+                        <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <h3>Advanced Editing</h3>
+                    <p>Refine images with intelligent AI editing. Modify, enhance, and transform with natural language commands.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">👤</div>
+                
+                <div class="bento-card fade-in">
+                    <!-- Character Consistency SVG 图标 -->
+                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+                        <circle cx="15" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M3 18c0-2.5 2.5-4 6-4M15 14c3.5 0 6 1.5 6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+                    </svg>
                     <h3>Character Consistency</h3>
-                    <p>Maintain consistent character appearances across multiple images. Perfect for storytelling, branding, and creative projects requiring visual continuity.</p>
+                    <p>Maintain perfect character continuity across images. Essential for storytelling, branding, and sequential art.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
-                    <h3>Lightning-Fast Generation</h3>
-                    <p>Experience rapid image generation without compromising quality. Get your creative results in seconds, not minutes.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 使用案例区块 -->
-    <section id="use-cases" class="use-cases">
-        <div class="container">
-            <h2 class="section-title">Example Use Cases</h2>
-            <div class="use-cases-grid">
-                <div class="use-case">
-                    <h3>🎬 Content Creation</h3>
-                    <p>Generate unique visuals for social media posts, blog articles, and marketing campaigns. Stand out with custom imagery that perfectly matches your message.</p>
-                </div>
-                <div class="use-case">
-                    <h3>📚 Storytelling & Comics</h3>
-                    <p>Create consistent characters and scenes for your stories, comics, or graphic novels. Maintain visual continuity throughout your narrative.</p>
-                </div>
-                <div class="use-case">
-                    <h3>🎮 Game Design Prototyping</h3>
-                    <p>Rapidly prototype character designs, environments, and concept art for game development. Iterate quickly on visual ideas.</p>
-                </div>
-                <div class="use-case">
-                    <h3>🎓 Educational Materials</h3>
-                    <p>Generate custom illustrations for educational content, presentations, and learning resources. Make complex concepts more engaging and accessible.</p>
-                </div>
-                <div class="use-case">
-                    <h3>🏢 Brand & Marketing</h3>
-                    <p>Create unique brand assets, product mockups, and promotional materials. Maintain consistent brand characters and visual identity.</p>
-                </div>
-                <div class="use-case">
-                    <h3>🎨 Creative Exploration</h3>
-                    <p>Experiment with different artistic styles, compositions, and concepts. Push the boundaries of your creativity with AI assistance.</p>
+                
+                <div class="bento-card fade-in">
+                    <!-- Fast Generation SVG 图标 -->
+                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                    </svg>
+                    <h3>Lightning Fast</h3>
+                    <p>Generate high-quality images in seconds. Optimized performance means more time creating, less time waiting.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 工作流程区块 -->
-    <section id="how-it-works" class="how-it-works">
+    <!-- CSS-only 可视化演示 -->
+    <section class="demo-section">
         <div class="container">
-            <h2 class="section-title">How It Works</h2>
-            <div class="steps-container">
-                <div class="step">
+            <div class="demo-container fade-in">
+                <div class="demo-box demo-prompt">
+                    <span class="demo-label">Prompt</span>
+                </div>
+                
+                <svg class="demo-arrow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                
+                <div class="demo-box demo-result">
+                    <span class="demo-label">Result</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 工作流程 - 3步区块 -->
+    <section id="how-it-works" class="section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">How It Works</h2>
+                <p class="section-subtitle">From concept to creation in three simple steps</p>
+            </div>
+            
+            <div class="steps-grid">
+                <div class="step-card fade-in">
                     <div class="step-number">1</div>
-                    <h3>Describe Your Vision</h3>
-                    <p>Write a text prompt describing the image you want to create or the edits you'd like to make. Be as detailed or as simple as you want.</p>
+                    <h3>Describe</h3>
+                    <p>Write a natural language prompt describing your vision. Be as detailed or concise as you prefer.</p>
                 </div>
-                <div class="step">
+                
+                <div class="step-card fade-in">
                     <div class="step-number">2</div>
-                    <h3>AI Generates Your Image</h3>
-                    <p>Nano Banana's advanced Gemini model processes your request and generates high-quality images in seconds using cutting-edge AI technology.</p>
+                    <h3>Generate</h3>
+                    <p>Nano Banana processes your request using Google's Gemini model and creates your image in seconds.</p>
                 </div>
-                <div class="step">
+                
+                <div class="step-card fade-in">
                     <div class="step-number">3</div>
-                    <h3>Refine & Download</h3>
-                    <p>Review your results, make adjustments with additional prompts, and download your final images ready for use in your projects.</p>
+                    <h3>Refine</h3>
+                    <p>Review your results, make adjustments with additional prompts, and export when ready.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- FAQ区块 -->
-    <section id="faq" class="faq">
+    <!-- FAQ 区块 -->
+    <section id="faq" class="section">
         <div class="container">
-            <h2 class="section-title">Frequently Asked Questions</h2>
-            <div class="faq-container">
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <h3>What is Nano Banana?</h3>
-                        <span class="faq-icon">+</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Nano Banana is Google's Gemini-powered image generation and editing model. It enables users to create high-quality images from text descriptions, edit existing images, and maintain character consistency across multiple generations.</p>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <h3>How does character consistency work?</h3>
-                        <span class="faq-icon">+</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Character consistency allows you to create multiple images featuring the same character with consistent appearance, style, and features. This is perfect for storytelling, comic creation, and brand mascot development.</p>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <h3>What types of images can I create?</h3>
-                        <span class="faq-icon">+</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>You can create a wide variety of images including illustrations, concept art, character designs, landscapes, product mockups, and more. The model supports various artistic styles and can generate both realistic and stylized imagery.</p>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <h3>How fast is image generation?</h3>
-                        <span class="faq-icon">+</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Nano Banana is optimized for speed, generating high-quality images in seconds. The exact generation time depends on complexity and system load, but the model is designed to provide rapid results without sacrificing quality.</p>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <h3>Can I edit images I didn't create with Nano Banana?</h3>
-                        <span class="faq-icon">+</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Yes! The image editing capabilities work with both AI-generated images and your own uploaded images. You can use natural language commands to modify, enhance, or transform any image.</p>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question">
-                        <h3>How do I get started?</h3>
-                        <span class="faq-icon">+</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Getting started is easy! Visit the Google AI Platform, access the Gemini API, and follow the documentation to integrate Nano Banana into your applications or use it through available interfaces.</p>
-                    </div>
-                </div>
+            <div class="section-header fade-in">
+                <h2 class="section-title">Frequently Asked Questions</h2>
             </div>
-        </div>
-    </section>
-
-    <!-- CTA区块 -->
-    <section class="cta-section">
-        <div class="container">
-            <h2>Ready to Create Amazing Images?</h2>
-            <p>Start generating stunning visuals with Nano Banana today.</p>
-            <a href="https://ai.google.dev/gemini-api" class="cta-button" target="_blank" rel="noopener">Get Started Now</a>
+            
+            <div class="faq-list">
+                <details class="fade-in">
+                    <summary>What is Nano Banana?</summary>
+                    <div class="faq-answer">
+                        <p>Nano Banana is Google's Gemini-powered image generation and editing model. It enables users to create high-quality images from text descriptions, edit existing images with natural language, and maintain character consistency across multiple generations.</p>
+                    </div>
+                </details>
+                
+                <details class="fade-in">
+                    <summary>How does character consistency work?</summary>
+                    <div class="faq-answer">
+                        <p>Character consistency allows you to generate multiple images featuring the same character with consistent appearance, style, and features. This is achieved through advanced reference preservation in the model, perfect for storytelling, comic creation, and brand identity work.</p>
+                    </div>
+                </details>
+                
+                <details class="fade-in">
+                    <summary>What types of images can I create?</summary>
+                    <div class="faq-answer">
+                        <p>You can create a wide variety of images including illustrations, concept art, character designs, landscapes, product mockups, and more. The model supports various artistic styles and can generate both photorealistic and stylized imagery.</p>
+                    </div>
+                </details>
+                
+                <details class="fade-in">
+                    <summary>How fast is image generation?</summary>
+                    <div class="faq-answer">
+                        <p>Nano Banana is optimized for speed, generating high-quality images in seconds. Generation time varies based on complexity and current system load, but the model prioritizes rapid results without compromising output quality.</p>
+                    </div>
+                </details>
+                
+                <details class="fade-in">
+                    <summary>Can I edit images I didn't create with Nano Banana?</summary>
+                    <div class="faq-answer">
+                        <p>Yes. The image editing capabilities work with both AI-generated images and your own uploaded images. You can use natural language commands to modify, enhance, or transform any compatible image.</p>
+                    </div>
+                </details>
+                
+                <details class="fade-in">
+                    <summary>How do I get started?</summary>
+                    <div class="faq-answer">
+                        <p>Visit the Google AI Platform, access the Gemini API, and follow the documentation to integrate Nano Banana into your applications. API keys and usage instructions are available through the developer portal.</p>
+                    </div>
+                </details>
+            </div>
         </div>
     </section>
 
     <!-- 页脚 -->
     <footer>
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>About Nano Banana</h4>
-                    <p>Google's Gemini-powered image generation and editing model, bringing AI creativity to everyone.</p>
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <svg class="logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8 4c-2 0-3 1-3 3 0 4 2 12 10 20 1 1 2 1 3 0 8-8 10-16 10-20 0-2-1-3-3-3-2 0-4 2-6 4h-2c-2-2-4-4-6-4z" fill="currentColor" style="color: #FDE047;"/>
+                        </svg>
+                        <span>Nano Banana</span>
+                    </div>
+                    <p>Google's Gemini-powered image generation and editing model. Bringing AI creativity to everyone.</p>
                 </div>
-                <div class="footer-section">
+                
+                <div class="footer-links">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="https://ai.google.dev/gemini-api/docs" target="_blank" rel="noopener">Documentation</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
                     <h4>Resources</h4>
                     <ul>
                         <li><a href="https://ai.google.dev/" target="_blank" rel="noopener">Google AI</a></li>
-                        <li><a href="https://ai.google.dev/gemini-api/docs" target="_blank" rel="noopener">Documentation</a></li>
                         <li><a href="https://ai.google.dev/gemini-api" target="_blank" rel="noopener">API Access</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Community</h4>
-                    <ul>
-                        <li><a href="https://developers.google.com/" target="_blank" rel="noopener">Developer Portal</a></li>
                         <li><a href="https://blog.google/technology/ai/" target="_blank" rel="noopener">AI Blog</a></li>
                     </ul>
                 </div>
+                
+                <div class="footer-links">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="https://developers.google.com/" target="_blank" rel="noopener">Developers</a></li>
+                        <li><a href="https://about.google/" target="_blank" rel="noopener">About Google</a></li>
+                    </ul>
+                </div>
             </div>
+            
             <div class="footer-bottom">
                 <p>&copy; 2026 Google LLC. Nano Banana is powered by Google Gemini. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
-    <!-- JavaScript 交互功能 -->
+    <!-- JavaScript 滚动显示动画 - IntersectionObserver -->
     <script>
-        // FAQ手风琴交互功能
+        // 滚动显示动画实现
+        // 使用 IntersectionObserver API 检测元素进入视口
         document.addEventListener('DOMContentLoaded', function() {
-            const faqItems = document.querySelectorAll('.faq-item');
+            // 检查用户是否设置了减少动画偏好
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             
-            faqItems.forEach(item => {
-                const question = item.querySelector('.faq-question');
+            if (!prefersReducedMotion) {
+                // 创建 IntersectionObserver 实例
+                const observerOptions = {
+                    root: null,
+                    rootMargin: '0px',
+                    threshold: 0.1
+                };
                 
-                question.addEventListener('click', () => {
-                    // 切换当前项的active状态
-                    const isActive = item.classList.contains('active');
-                    
-                    // 关闭所有其他FAQ项
-                    faqItems.forEach(otherItem => {
-                        otherItem.classList.remove('active');
+                const observer = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            // 元素进入视口时添加 visible 类
+                            entry.target.classList.add('visible');
+                            // 可选：观察一次后停止观察
+                            observer.unobserve(entry.target);
+                        }
                     });
-                    
-                    // 如果当前项不是active状态，则激活它
-                    if (!isActive) {
-                        item.classList.add('active');
-                    }
+                }, observerOptions);
+                
+                // 观察所有带有 fade-in 类的元素
+                const fadeElements = document.querySelectorAll('.fade-in');
+                fadeElements.forEach(function(element) {
+                    observer.observe(element);
                 });
-            });
+            } else {
+                // 如果用户偏好减少动画，直接显示所有元素
+                const fadeElements = document.querySelectorAll('.fade-in');
+                fadeElements.forEach(function(element) {
+                    element.classList.add('visible');
+                });
+            }
             
-            // 平滑滚动功能
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
+            // 平滑滚动到锚点
+            document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+                anchor.addEventListener('click', function(e) {
                     const href = this.getAttribute('href');
                     if (href !== '#') {
                         e.preventDefault();
