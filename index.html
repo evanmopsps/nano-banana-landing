@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Nano Banana - Google's Gemini image generation and editing model. Create stunning images with text-to-image, advanced editing, character consistency, and lightning-fast generation.">
+    <meta name="keywords" content="Nano Banana, Gemini, Google AI, image generation, text-to-image, AI editing, character consistency">
+    <meta name="author" content="Google">
+    
+    <!-- Open Graph 元标签 用于社交媒体分享 -->
+    <meta property="og:title" content="Nano Banana - AI Image Generation & Editing">
+    <meta property="og:description" content="Create stunning images with Google's Gemini-powered Nano Banana. Text-to-image generation, advanced editing, and character consistency.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://nano-banana.github.io/">
+    <meta property="og:image" content="https://nano-banana.github.io/og-image.png">
+    
+    <!-- Twitter Card 元标签 -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Nano Banana - AI Image Generation & Editing">
+    <meta name="twitter:description" content="Create stunning images with Google's Gemini-powered Nano Banana.">
+    <meta name="twitter:image" content="https://nano-banana.github.io/og-image.png">
+    
+    <title>Nano Banana - AI Image Generation & Editing by Google Gemini</title>
+    
+    <!-- Favicon SVG 内联图标 -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E🍌%3C/text%3E%3C/svg%3E">
+    
+    <style>
+        /* 全局样式和CSS变量 */
+        :root {
+            --banana-yellow: #FFE135;
+            --dark-bg: #1a1a1a;
+            --darker-bg: #0d0d0d;
+            --light-text: #ffffff;
+            --gray-text: #b0b0b0;
+            --accent-yellow: #FFD700;
+            --gradient-start: #FFE135;
+            --gradient-end: #FFA500;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* 容器和布局 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 导航栏样式 */
+        nav {
+            background-color: var(--darker-bg);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(255, 225, 53, 0.1);
+        }
+        
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--banana-yellow);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: var(--light-text);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--banana-yellow);
+        }
+        
+        /* 英雄区块样式 */
+        .hero {
+            padding: 5rem 0;
+            text-align: center;
+            background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 225, 53, 0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            color: var(--gray-text);
+            margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* 按钮样式 */
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: var(--darker-bg);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 225, 53, 0.3);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(255, 225, 53, 0.5);
+        }
+        
+        .secondary-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: transparent;
+            color: var(--banana-yellow);
+            text-decoration: none;
+            border: 2px solid var(--banana-yellow);
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            margin-left: 1rem;
+        }
+        
+        .secondary-button:hover {
+            background: var(--banana-yellow);
+            color: var(--darker-bg);
+        }
+        
+        /* 特性区块样式 */
+        .features {
+            padding: 5rem 0;
+            background-color: var(--dark-bg);
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--banana-yellow);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background-color: var(--darker-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(255, 225, 53, 0.1);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 225, 53, 0.2);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--banana-yellow);
+        }
+        
+        .feature-card p {
+            color: var(--gray-text);
+        }
+        
+        /* 使用案例区块样式 */
+        .use-cases {
+            padding: 5rem 0;
+            background-color: var(--darker-bg);
+        }
+        
+        .use-cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .use-case {
+            background-color: var(--dark-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            border-left: 4px solid var(--banana-yellow);
+        }
+        
+        .use-case h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--light-text);
+        }
+        
+        .use-case p {
+            color: var(--gray-text);
+        }
+        
+        /* 工作流程区块样式 */
+        .how-it-works {
+            padding: 5rem 0;
+            background-color: var(--dark-bg);
+        }
+        
+        .steps-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 2rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .step {
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: var(--darker-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .step h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--light-text);
+        }
+        
+        .step p {
+            color: var(--gray-text);
+        }
+        
+        /* FAQ区块样式 */
+        .faq {
+            padding: 5rem 0;
+            background-color: var(--darker-bg);
+        }
+        
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+            margin-top: 3rem;
+        }
+        
+        .faq-item {
+            background-color: var(--dark-bg);
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 225, 53, 0.1);
+        }
+        
+        .faq-question {
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+        
+        .faq-question:hover {
+            background-color: rgba(255, 225, 53, 0.05);
+        }
+        
+        .faq-question h3 {
+            font-size: 1.1rem;
+            color: var(--light-text);
+        }
+        
+        .faq-icon {
+            color: var(--banana-yellow);
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+        
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+        
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s, padding 0.3s;
+            padding: 0 1.5rem;
+        }
+        
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+            padding: 0 1.5rem 1.5rem;
+        }
+        
+        .faq-answer p {
+            color: var(--gray-text);
+        }
+        
+        /* CTA区块样式 */
+        .cta-section {
+            padding: 5rem 0;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
+            text-align: center;
+        }
+        
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--banana-yellow);
+        }
+        
+        .cta-section p {
+            font-size: 1.2rem;
+            color: var(--gray-text);
+            margin-bottom: 2rem;
+        }
+        
+        /* 页脚样式 */
+        footer {
+            background-color: var(--darker-bg);
+            padding: 3rem 0 1.5rem;
+            border-top: 1px solid rgba(255, 225, 53, 0.1);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h4 {
+            color: var(--banana-yellow);
+            margin-bottom: 1rem;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-section a {
+            color: var(--gray-text);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-section a:hover {
+            color: var(--banana-yellow);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 225, 53, 0.1);
+            color: var(--gray-text);
+        }
+        
+        /* 移动端响应式样式 */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .secondary-button {
+                display: block;
+                margin: 1rem auto 0;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .steps-container {
+                flex-direction: column;
+            }
+            
+            .step {
+                min-width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .cta-button, .secondary-button {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <span>🍌</span>
+                <span>Nano Banana</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#use-cases">Use Cases</a></li>
+                <li><a href="#how-it-works">How It Works</a></li>
+                <li><a href="#faq">FAQ</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 英雄区块 -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>🍌 Nano Banana</h1>
+                <p>Google's Gemini-Powered Image Generation & Editing Model. Create stunning visuals with AI-driven text-to-image generation, advanced editing capabilities, and consistent character design.</p>
+                <div>
+                    <a href="https://ai.google.dev/gemini-api" class="cta-button" target="_blank" rel="noopener">Get Started</a>
+                    <a href="#how-it-works" class="secondary-button">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 核心特性区块 -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Key Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Text-to-Image Generation</h3>
+                    <p>Transform your words into stunning visual art. Describe your vision, and Nano Banana brings it to life with remarkable detail and creativity.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✨</div>
+                    <h3>Advanced Image Editing</h3>
+                    <p>Refine and perfect your images with AI-powered editing tools. Modify, enhance, and transform existing images with natural language commands.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👤</div>
+                    <h3>Character Consistency</h3>
+                    <p>Maintain consistent character appearances across multiple images. Perfect for storytelling, branding, and creative projects requiring visual continuity.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Lightning-Fast Generation</h3>
+                    <p>Experience rapid image generation without compromising quality. Get your creative results in seconds, not minutes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 使用案例区块 -->
+    <section id="use-cases" class="use-cases">
+        <div class="container">
+            <h2 class="section-title">Example Use Cases</h2>
+            <div class="use-cases-grid">
+                <div class="use-case">
+                    <h3>🎬 Content Creation</h3>
+                    <p>Generate unique visuals for social media posts, blog articles, and marketing campaigns. Stand out with custom imagery that perfectly matches your message.</p>
+                </div>
+                <div class="use-case">
+                    <h3>📚 Storytelling & Comics</h3>
+                    <p>Create consistent characters and scenes for your stories, comics, or graphic novels. Maintain visual continuity throughout your narrative.</p>
+                </div>
+                <div class="use-case">
+                    <h3>🎮 Game Design Prototyping</h3>
+                    <p>Rapidly prototype character designs, environments, and concept art for game development. Iterate quickly on visual ideas.</p>
+                </div>
+                <div class="use-case">
+                    <h3>🎓 Educational Materials</h3>
+                    <p>Generate custom illustrations for educational content, presentations, and learning resources. Make complex concepts more engaging and accessible.</p>
+                </div>
+                <div class="use-case">
+                    <h3>🏢 Brand & Marketing</h3>
+                    <p>Create unique brand assets, product mockups, and promotional materials. Maintain consistent brand characters and visual identity.</p>
+                </div>
+                <div class="use-case">
+                    <h3>🎨 Creative Exploration</h3>
+                    <p>Experiment with different artistic styles, compositions, and concepts. Push the boundaries of your creativity with AI assistance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 工作流程区块 -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">How It Works</h2>
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Describe Your Vision</h3>
+                    <p>Write a text prompt describing the image you want to create or the edits you'd like to make. Be as detailed or as simple as you want.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>AI Generates Your Image</h3>
+                    <p>Nano Banana's advanced Gemini model processes your request and generates high-quality images in seconds using cutting-edge AI technology.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Refine & Download</h3>
+                    <p>Review your results, make adjustments with additional prompts, and download your final images ready for use in your projects.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ区块 -->
+    <section id="faq" class="faq">
+        <div class="container">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What is Nano Banana?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Nano Banana is Google's Gemini-powered image generation and editing model. It enables users to create high-quality images from text descriptions, edit existing images, and maintain character consistency across multiple generations.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How does character consistency work?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Character consistency allows you to create multiple images featuring the same character with consistent appearance, style, and features. This is perfect for storytelling, comic creation, and brand mascot development.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What types of images can I create?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>You can create a wide variety of images including illustrations, concept art, character designs, landscapes, product mockups, and more. The model supports various artistic styles and can generate both realistic and stylized imagery.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How fast is image generation?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Nano Banana is optimized for speed, generating high-quality images in seconds. The exact generation time depends on complexity and system load, but the model is designed to provide rapid results without sacrificing quality.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Can I edit images I didn't create with Nano Banana?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! The image editing capabilities work with both AI-generated images and your own uploaded images. You can use natural language commands to modify, enhance, or transform any image.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How do I get started?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Getting started is easy! Visit the Google AI Platform, access the Gemini API, and follow the documentation to integrate Nano Banana into your applications or use it through available interfaces.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA区块 -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Create Amazing Images?</h2>
+            <p>Start generating stunning visuals with Nano Banana today.</p>
+            <a href="https://ai.google.dev/gemini-api" class="cta-button" target="_blank" rel="noopener">Get Started Now</a>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>About Nano Banana</h4>
+                    <p>Google's Gemini-powered image generation and editing model, bringing AI creativity to everyone.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://ai.google.dev/" target="_blank" rel="noopener">Google AI</a></li>
+                        <li><a href="https://ai.google.dev/gemini-api/docs" target="_blank" rel="noopener">Documentation</a></li>
+                        <li><a href="https://ai.google.dev/gemini-api" target="_blank" rel="noopener">API Access</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Community</h4>
+                    <ul>
+                        <li><a href="https://developers.google.com/" target="_blank" rel="noopener">Developer Portal</a></li>
+                        <li><a href="https://blog.google/technology/ai/" target="_blank" rel="noopener">AI Blog</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Google LLC. Nano Banana is powered by Google Gemini. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript 交互功能 -->
+    <script>
+        // FAQ手风琴交互功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const faqItems = document.querySelectorAll('.faq-item');
+            
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                
+                question.addEventListener('click', () => {
+                    // 切换当前项的active状态
+                    const isActive = item.classList.contains('active');
+                    
+                    // 关闭所有其他FAQ项
+                    faqItems.forEach(otherItem => {
+                        otherItem.classList.remove('active');
+                    });
+                    
+                    // 如果当前项不是active状态，则激活它
+                    if (!isActive) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+            
+            // 平滑滚动功能
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    if (href !== '#') {
+                        e.preventDefault();
+                        const target = document.querySelector(href);
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
